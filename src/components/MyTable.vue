@@ -55,57 +55,57 @@
 
     <table class="table table-sm">
       <thead>
-        <tr>
-          <td width="10%">
+        <tr class="d-flex">
+          <td class="col-2">
             Date sent
             <span @click="sortByDateSent" class="btn">
               {{ sortDateAsc ? "⬆️" : "⬇️" }}
             </span>
           </td>
-          <td width="20%">
+          <td class="col-2">
             Company
             <span @click="sortByCompany" class="btn">
               {{ sortCompanyAsc ? "⬆️" : "⬇️" }}
             </span>
           </td>
-          <td v-for="(year, iY) in findYears" :key="iY" width="20%">
-            <table width="100%" class="table-borderless">
-              <tr>
-                <td colspan="2">{{ year | formatYears }}</td>
-                <td></td>
+          <td v-for="(year, iY) in findYears" :key="iY" class="col-2">
+            <table class="table-borderless w-100">
+              <tr class="d-flex">
+                <td colspan="2" class="col-12">{{ year | formatYears }}</td>
+                <!-- <td></td> -->
               </tr>
-              <tr>
-                <td>FIX</td>
-                <td>FRN</td>
+              <tr class="d-flex">
+                <td class="col-6">FIX</td>
+                <td class="col-6">FRN</td>
               </tr>
             </table>
           </td>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, id) in filteredByCurrency" :key="id">
-          <td v-if="item.DateSent" width="20%">{{ item.DateSent | formatDate }}</td>
-          <td v-else width="20%"></td>
-          <td v-if="item.Quote !== null" colspan="4">
-            <table width="100%" class="table-borderless">
-              <tr v-for="(param, i) in sortedParams" :key="i">
-                <td width="25%" v-if="param === display">
+        <tr v-for="(item, id) in filteredByCurrency" :key="id" class="d-flex">
+          <td v-if="item.DateSent" class="col-2">{{ item.DateSent | formatDate }}</td>
+          <td v-else class="col-2"></td>
+          <td v-if="item.Quote !== null" colspan="4" class="col-8">
+            <table class="table-borderless w-100">
+              <tr v-for="(param, i) in sortedParams" :key="i" class="d-flex">
+                <td v-if="param === display" class="col-3">
                   <strong>{{ item.Company }}</strong>
                 </td>
-                <td width="25%" v-else>{{ param }}</td>
-                <td v-for="(year, y) in findYears" :key="y">
-                  <table width="100%" class="table-borderless">
-                    <tr>
-                      <td v-if="containsStr(param, 'Spread')" width="50%">
+                <td v-else class="col-3">{{ param }}</td>
+                <td v-for="(year, y) in findYears" :key="y" class="col-3">
+                  <table class="table-borderless w-100">
+                    <tr class="d-flex">
+                      <td v-if="containsStr(param, 'Spread')" class="col-6">
                         {{ getQuoteData(item.Quote, year, "FIX", param) | formatSpread }}
                       </td>
-                      <td v-else width="50%">
+                      <td v-else class="col-6">
                         {{ getQuoteData(item.Quote, year, "FIX", param) | formatYield }}
                       </td>
-                      <td v-if="containsStr(param, 'Spread')" width="50%">
+                      <td v-if="containsStr(param, 'Spread')" class="col-6">
                         {{ getQuoteData(item.Quote, year, "FRN", param) | formatSpread }}
                       </td>
-                      <td v-else width="50%">
+                      <td v-else class="col-6">
                         {{ getQuoteData(item.Quote, year, "FRN", param) | formatYield }}
                       </td>
                     </tr>
@@ -114,7 +114,7 @@
               </tr>
             </table>
           </td>
-          <td v-else width="20%">
+          <td v-else class="col-2">
             <strong>{{ item.Company }}</strong>
           </td>
         </tr>
@@ -408,11 +408,7 @@ export default {
 </script>
 
 <style scoped>
-.table-nested,
-.table-nested thead tr th,
-.table-nested tbody tr td {
-  /* border: 1px solid #000; */
-  border: none im !important;
-  border-collapse: collapse;
-}
+/* table, th, td {
+  border: 1px solid #333;
+} */
 </style>
