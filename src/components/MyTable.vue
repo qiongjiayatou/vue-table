@@ -83,35 +83,79 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, id) in filteredByCurrency" :key="id" class="d-flex" @click="toggleRow(item.Id)">
-          <td v-if="item.DateSent" class="col-2 collapsed" data-toggle="collapse" :aria-expanded="false" :data-target="'.collapse-' + item.Company">
-            <span v-if="isToggledRow(item.Id)" :class="['mr-3', 'd-inline', 'span-arrow']">&#9660;</span>
-            <span v-else :class="['mr-3', 'd-inline', 'span-arrow']">&#9658;</span>
+        <tr
+          v-for="(item, id) in filteredByCurrency"
+          :key="id"
+          class="d-flex"
+          @click="toggleRow(item.Id)"
+        >
+          <td
+            v-if="item.DateSent"
+            class="col-2 collapsed"
+            data-toggle="collapse"
+            :aria-expanded="false"
+            :data-target="'.collapse-' + item.Company"
+          >
+            <span
+              v-if="isToggledRow(item.Id)"
+              :class="['mr-3', 'd-inline', 'span-arrow']"
+              >&#9660;</span
+            >
+            <span v-else :class="['mr-3', 'd-inline', 'span-arrow']"
+              >&#9658;</span
+            >
 
             {{ item.DateSent | formatDate }}
           </td>
           <td v-else class="col-2"></td>
           <td v-if="item.Quote !== null" colspan="4" class="col-8">
             <table class="table-borderless w-100">
-              <tr v-for="(param, i) in sortedParams" :key="i" class="d-flex" >
+              <tr v-for="(param, i) in sortedParams" :key="i" class="d-flex">
                 <td v-if="param === display" class="col-3">
                   <strong>{{ item.Company }}</strong>
                 </td>
-                <td v-else :class="['col-3', (i !== 0) ? 'collapse collapse-' + item.Company : '']">{{ param }}</td>
-                <td v-for="(year, y) in findYears" :key="y" :class="['col-3', (i !== 0) ? 'collapse collapse-' + item.Company : '']">
+                <td
+                  v-else
+                  :class="[
+                    'col-3',
+                    i !== 0 ? 'collapse collapse-' + item.Company : '',
+                  ]"
+                >
+                  {{ param }}
+                </td>
+                <td
+                  v-for="(year, y) in findYears"
+                  :key="y"
+                  :class="[
+                    'col-3',
+                    i !== 0 ? 'collapse collapse-' + item.Company : '',
+                  ]"
+                >
                   <table class="table-borderless w-100">
                     <tr class="d-flex">
                       <td v-if="containsStr(param, 'Spread')" class="col-6">
-                        {{ getQuoteData(item.Quote, year, "FIX", param) | formatSpread }}
+                        {{
+                          getQuoteData(item.Quote, year, "FIX", param)
+                            | formatSpread
+                        }}
                       </td>
                       <td v-else class="col-6">
-                        {{ getQuoteData(item.Quote, year, "FIX", param) | formatYield }}
+                        {{
+                          getQuoteData(item.Quote, year, "FIX", param)
+                            | formatYield
+                        }}
                       </td>
                       <td v-if="containsStr(param, 'Spread')" class="col-6">
-                        {{ getQuoteData(item.Quote, year, "FRN", param) | formatSpread }}
+                        {{
+                          getQuoteData(item.Quote, year, "FRN", param)
+                            | formatSpread
+                        }}
                       </td>
                       <td v-else class="col-6">
-                        {{ getQuoteData(item.Quote, year, "FRN", param) | formatYield }}
+                        {{
+                          getQuoteData(item.Quote, year, "FRN", param)
+                            | formatYield
+                        }}
                       </td>
                     </tr>
                   </table>
@@ -124,49 +168,46 @@
           </td>
         </tr>
 
-        <!-- <tr v-for="item in filteredByCurrency" :key="item.Id">
-          <td>
-            <tr>
-              <td>{{ item.DateSent }}</td>
-            </tr>
-            <tr>
-              <td></td>
-            </tr>
-            <tr>
-              <td></td>
-            </tr>
+        <tr class="d-flex">
+          <td class="col-2"></td>
+          <td class="col-2"></td>
+          <td class="col-8">
+            <table class="table-borderless w-100">
+              <tr class="d-flex">
+                <td v-for="(year, y) in findYears" :key="y" :class="['col-3']">
+                  <table class="table-borderless w-100">
+                    <tr class="d-flex">
+                      <td v-if="containsStr(display, 'Spread')" class="col-6">
+                        {{
+                          getAverage(year, "FIX")
+                            | formatSpread
+                        }}
+                      </td>
+                      <td v-else class="col-6">
+                        {{
+                          getAverage(year, "FIX")
+                            | formatYield
+                        }}
+                      </td>
+                      <td v-if="containsStr(display, 'Spread')" class="col-6">
+                        {{
+                          getAverage(year, "FRN")
+                            | formatSpread
+                        }}
+                      </td>
+                      <td v-else class="col-6">
+                        {{
+                          getAverage(year, "FRN")
+                            | formatYield
+                        }}
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
           </td>
-          <td v-if="item.Quote !== null" colspan="4">
-            <tr v-for="(param, i) in sortedParams" :key="i">
-              <td>{{ param === display ? item.Company : param }}</td>
-              <td v-for="(year, iY) in findYears" :key="iY">
-                <tr>
-                  <td>
-                    {{ getQuoteData(item.Quote, year, "FIX", param) }}
-                  </td>
-                  <td>
-                    {{ getQuoteData(item.Quote, year, "FRN", param) }}
-                  </td>
-                </tr>
-              </td>
-            </tr>
-          </td>
-          <td v-else>{{ item.Company }}</td>
-        </tr> -->
-
-        <!-- <tr v-for="(year, i2) in findYears" :key="i2">
-          <td>{{ display }}</td>
-          <td>
-            <tr>
-              <td>
-                {{ getAverage(year, "FIX", display) }}
-              </td>
-              <td>
-                {{ getAverage(year, "FRN", display) }}
-              </td>
-            </tr>
-          </td>
-        </tr> -->
+        </tr>
       </tbody>
     </table>
   </div>
@@ -174,7 +215,7 @@
 
 <script>
 import data from "@/mocks/data.json";
-import moment from 'moment'
+import moment from "moment";
 
 export default {
   name: "my-table",
@@ -190,29 +231,23 @@ export default {
 
       isCollapsed: false,
       toggledRows: [],
-      // count: 0,
-      // amount: 0,
-      // average: 0,
 
       params: ["Spread", "Yield", "3MLSpread"],
       data: [],
     };
   },
   methods: {
-    
     toggleRow(id) {
-      
       if (this.isToggledRow(id)) {
-        this.toggledRows = this.toggledRows.filter(row => row !== id)  
+        this.toggledRows = this.toggledRows.filter((row) => row !== id);
       } else {
-        this.toggledRows.push(id)  
+        this.toggledRows.push(id);
       }
       // console.log(this.toggledRows)
-      
     },
 
     isToggledRow(id) {
-      return this.toggledRows.find(row => row === id)
+      return this.toggledRows.find((row) => row === id);
     },
 
     getQuoteData(quote, years, couponType, returnValue) {
@@ -235,9 +270,8 @@ export default {
     },
 
     containsStr(str, substr) {
-
-      if (str === '' || substr === '') return false
-      return str.includes(substr)
+      if (str === "" || substr === "") return false;
+      return str.includes(substr);
     },
 
     isYearToggled(year) {
@@ -300,32 +334,24 @@ export default {
       this.data.sort((a, b) => (a.Quote === null) - (b.Quote === null));
     },
 
-    _getAverage(years, couponType, display) {
-      // const years = 10;
-      // const couponType = "FIX";
-      // const display = "Spread";
-      // var amount = 0;
-      // var count = 0;
+    getAverage(years, couponType) {
+      var avgCount = 0
+      var avgSum = 0
 
-      // console.log(
-      this.data.forEach((el) => {
-        if (el.Quote) {
-          // console.log(amount, count);
-          // console.log(el.Quote)
-          el.Quote.forEach((q) => {
-            if (q.Years === years && q.CouponType == couponType) {
-              this.amount += q[display];
-              this.count++;
+      this.filteredByCurrency.forEach((item) => {
+        if (!item.Quote) return;
 
-              // console.log(amount, count);
-            }
-            // console.log(q.Years, q.CouponType, q.Spread);
-          });
-        }
+        item.Quote.forEach((el) => {
+          if (el.Years == years && el.CouponType == couponType) {
+            // console.log(el[this.display]);
+            avgCount++;
+            avgSum += el[this.display];
+          }
+        });
       });
+      
+      return (avgCount > 0) ? (avgSum / avgCount) : null
 
-      if (this.count > 0) return this.amount / this.count;
-      else return null;
     },
   },
 
@@ -397,24 +423,24 @@ export default {
   },
 
   filters: {
-    formatYears: function(value) {
-      return value + 'YRS'
+    formatYears: function (value) {
+      return value + "YRS";
     },
-    formatDate: function(value) {
-      return moment(value).format('DD-MMM-YY');
+    formatDate: function (value) {
+      return moment(value).format("DD-MMM-YY");
     },
-    formatSpread: function(value) {
-      if (isNaN(+value) || value === null) return 
+    formatSpread: function (value) {
+      if (isNaN(+value) || value === null) return '';
 
-      if (value > 0) value = '+' + value
-      return value + 'bp'
+      if (value > 0) value = "+" + value;
+      return Math.round(value) + "bp"; // hiiljlkjl
     },
-    formatYield: function(value) {
-      if (isNaN(+value) || value === null) return 
+    formatYield: function (value) {
+      if (isNaN(+value) || value === null) return '';
 
-      return +value.toFixed(3) + '%'
+      return +value.toFixed(3) + "%";
       // return value
-    }
+    },
   },
   created() {
     this.data = data.Items;
@@ -425,8 +451,31 @@ export default {
 
     this.sortByDateSent();
 
+    // console.log(this.getAverage(10, "FIX"));
 
+    // this.filteredByCurrency.forEach((item) => {
+    //   // console.log(Quote)
 
+    //   if (!item.Quote) return;
+    //   item.Quote.forEach((el) => {
+    //     if (el.CouponType == "FIX" && el.Years == 10) {
+    //       let n = "3MLSpread";
+    //       console.log(el[n]);
+
+    //       this.avgCount++;
+    //       this.avgSum += el[n];
+    //     }
+    //   });
+    // });
+
+    // console.log(
+    //   this.avgSum,
+    //   this.avgCount,
+    //   (this.avgSum / this.avgCount).toFixed(1)
+    // );
+
+    // console.log(this.filteredByCurrency)
+    // console.log(this.years)
   },
 };
 </script>
@@ -439,5 +488,4 @@ export default {
 .span-arrow:hover {
   cursor: pointer;
 }
-
 </style>
