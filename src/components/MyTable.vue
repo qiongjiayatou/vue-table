@@ -83,8 +83,8 @@
       </thead>
       <tbody>
         <tr
-          v-for="(item, id) in filteredByCurrency"
-          :key="id"
+          v-for="(item, itemRow) in filteredByCurrency"
+          :key="itemRow"
           class="d-flex"
           @click="toggleRow(item.Id)"
         >
@@ -136,8 +136,7 @@
                       <td v-if="containsStr(param, 'Spread')" 
                       :class="[
                       'col-6', 
-                      isMinValue(year, 'FIX', getQuoteData(item.Quote, year, 'FIX', param)) 
-                      ? 'bg-warning' : '' ]">
+                      isMinValue(item.Quote, year, 'FIX', param) ? 'bg-warning' : '' ]">
                         {{
                           getQuoteData(item.Quote, year, "FIX", param)
                             | formatSpread
@@ -147,8 +146,7 @@
                       class="col-6"
                       :class="[
                       'col-6', 
-                      isMinValue(year, 'FIX', getQuoteData(item.Quote, year, 'FIX', param)) 
-                      ? 'bg-warning' : '' ]">
+                      isMinValue(item.Quote, year, 'FIX', param) ? 'bg-warning' : '' ]">
                         {{
                           getQuoteData(item.Quote, year, "FIX", param)
                             | formatYield
@@ -158,8 +156,7 @@
                       class="col-6"
                       :class="[
                       'col-6', 
-                      isMinValue(year, 'FRN', getQuoteData(item.Quote, year, 'FRN', param)) 
-                      ? 'bg-warning' : '' ]">
+                      isMinValue(item.Quote, year, 'FRN', param) ? 'bg-warning' : '' ]">
                         {{
                           getQuoteData(item.Quote, year, "FRN", param)
                             | formatSpread
@@ -169,8 +166,7 @@
                       class="col-6"
                       :class="[
                       'col-6', 
-                      isMinValue(year, 'FRN', getQuoteData(item.Quote, year, 'FRN', param)) 
-                      ? 'bg-warning' : '' ]">
+                      isMinValue(item.Quote, year, 'FRN', param) ? 'bg-warning' : '' ]">
                         {{
                           getQuoteData(item.Quote, year, "FRN", param)
                             | formatYield
@@ -362,11 +358,14 @@ export default {
       return avgCount > 0 ? avgSum / avgCount : null;
     },
 
-    isMinValue(year, couponType, value) {
+    isMinValue(quote, year, couponType, param) {
 
-      return !isNaN(this.getMinValue(year, couponType)) 
-        && this.getMinValue(year, couponType) !== null 
-        && this.getMinValue(year, couponType) === value
+      var value = this.getQuoteData(quote, year, couponType, param)
+      var minValue = this.getMinValue(year, couponType)
+
+      return param == this.display 
+        && !isNaN(minValue) && value !== null 
+        && minValue === value
 
     },
 
@@ -387,7 +386,7 @@ export default {
         });
       });
 
-      return (count > 1) ? minValue : null; 
+      return (count > 0) ? minValue : null; 
     },
   },
 
@@ -486,8 +485,6 @@ export default {
     this.display = this.params[0];
 
     this.sortByDateSent();
-
-
 
 
 
