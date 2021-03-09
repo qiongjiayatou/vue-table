@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <div class="w-50">
       <div class="d-flex">
         <div class="btn-group m-3">
@@ -72,7 +72,6 @@
             <table class="table-borderless w-100">
               <tr class="d-flex">
                 <td colspan="2" class="col-12">{{ year | formatYears }}</td>
-                <!-- <td></td> -->
               </tr>
               <tr class="d-flex">
                 <td class="col-6">FIX</td>
@@ -134,25 +133,44 @@
                 >
                   <table class="table-borderless w-100">
                     <tr class="d-flex">
-                      <td v-if="containsStr(param, 'Spread')" class="col-6">
+                      <td v-if="containsStr(param, 'Spread')" 
+                      :class="[
+                      'col-6', 
+                      isMinValue(year, 'FIX', getQuoteData(item.Quote, year, 'FIX', param)) 
+                      ? 'bg-warning' : '' ]">
                         {{
                           getQuoteData(item.Quote, year, "FIX", param)
                             | formatSpread
                         }}
                       </td>
-                      <td v-else class="col-6">
+                      <td v-else 
+                      class="col-6"
+                      :class="[
+                      'col-6', 
+                      isMinValue(year, 'FIX', getQuoteData(item.Quote, year, 'FIX', param)) 
+                      ? 'bg-warning' : '' ]">
                         {{
                           getQuoteData(item.Quote, year, "FIX", param)
                             | formatYield
                         }}
                       </td>
-                      <td v-if="containsStr(param, 'Spread')" class="col-6">
+                      <td v-if="containsStr(param, 'Spread')" 
+                      class="col-6"
+                      :class="[
+                      'col-6', 
+                      isMinValue(year, 'FRN', getQuoteData(item.Quote, year, 'FRN', param)) 
+                      ? 'bg-warning' : '' ]">
                         {{
                           getQuoteData(item.Quote, year, "FRN", param)
                             | formatSpread
                         }}
                       </td>
-                      <td v-else class="col-6">
+                      <td v-else 
+                      class="col-6"
+                      :class="[
+                      'col-6', 
+                      isMinValue(year, 'FRN', getQuoteData(item.Quote, year, 'FRN', param)) 
+                      ? 'bg-warning' : '' ]">
                         {{
                           getQuoteData(item.Quote, year, "FRN", param)
                             | formatYield
@@ -181,28 +199,16 @@
                   <table class="table-borderless w-100">
                     <tr class="d-flex">
                       <td v-if="containsStr(display, 'Spread')" class="col-6">
-                        {{
-                          getAverage(year, "FIX")
-                            | formatSpread
-                        }}
+                        {{ getAverage(year, "FIX") | formatSpread }}
                       </td>
                       <td v-else class="col-6">
-                        {{
-                          getAverage(year, "FIX")
-                            | formatYield
-                        }}
+                        {{ getAverage(year, "FIX") | formatYield }}
                       </td>
                       <td v-if="containsStr(display, 'Spread')" class="col-6">
-                        {{
-                          getAverage(year, "FRN")
-                            | formatSpread
-                        }}
+                        {{ getAverage(year, "FRN") | formatSpread }}
                       </td>
                       <td v-else class="col-6">
-                        {{
-                          getAverage(year, "FRN")
-                            | formatYield
-                        }}
+                        {{ getAverage(year, "FRN") | formatYield }}
                       </td>
                     </tr>
                   </table>
@@ -338,8 +344,8 @@ export default {
     },
 
     getAverage(years, couponType) {
-      var avgCount = 0
-      var avgSum = 0
+      var avgCount = 0;
+      var avgSum = 0;
 
       this.filteredByCurrency.forEach((item) => {
         if (!item.Quote) return;
@@ -352,9 +358,36 @@ export default {
           }
         });
       });
-      
-      return (avgCount > 0) ? (avgSum / avgCount) : null
 
+      return avgCount > 0 ? avgSum / avgCount : null;
+    },
+
+    isMinValue(year, couponType, value) {
+
+      return !isNaN(this.getMinValue(year, couponType)) 
+        && this.getMinValue(year, couponType) !== null 
+        && this.getMinValue(year, couponType) === value
+
+    },
+
+    getMinValue(years, couponType) {
+
+      var minValue = Math.pow(10, 10000000);
+      var count = 0;
+
+      this.filteredByCurrency.forEach((item) => {
+        if (!item.Quote) return;
+
+        item.Quote.forEach((el) => {
+          if (el.Years == years && el.CouponType == couponType && el[this.display] !== null) {
+            count++
+            minValue =
+              el[this.display] < minValue ? el[this.display] : minValue
+          }
+        });
+      });
+
+      return (count > 1) ? minValue : null; 
     },
   },
 
@@ -433,13 +466,13 @@ export default {
       return moment(value).format("DD-MMM-YY");
     },
     formatSpread: function (value) {
-      if (isNaN(+value) || value === null) return '';
+      if (isNaN(+value) || value === null) return "";
 
       if (value > 0) value = "+" + value;
       return Math.round(value) + "bp"; // hiiljlkjl
     },
     formatYield: function (value) {
-      if (isNaN(+value) || value === null) return '';
+      if (isNaN(+value) || value === null) return "";
 
       return +value.toFixed(3) + "%";
       // return value
@@ -453,6 +486,9 @@ export default {
     this.display = this.params[0];
 
     this.sortByDateSent();
+
+
+
 
 
   },
