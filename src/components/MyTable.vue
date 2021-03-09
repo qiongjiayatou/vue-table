@@ -111,7 +111,7 @@
           <td v-if="item.Quote !== null" colspan="4" class="col-8">
             <table class="table-borderless w-100">
               <tr v-for="(param, i) in sortedParams" :key="i" class="d-flex">
-                <td v-if="param === display" class="col-3">
+                <td v-if="param === display" class="col-3 text-left">
                   <strong>{{ item.Company }}</strong>
                 </td>
                 <td
@@ -163,14 +163,16 @@
               </tr>
             </table>
           </td>
-          <td v-else class="col-2">
-            <strong>{{ item.Company }}</strong>
+          <td v-else class="col-2 text-left">
+            <span class="text-muted">{{ item.Company }}</span>
           </td>
         </tr>
 
         <tr class="d-flex">
           <td class="col-2"></td>
-          <td class="col-2"></td>
+          <td class="col-2 d-flex align-items-center text-left">
+            <strong>Average by {{ display }}</strong>
+          </td>
           <td class="col-8">
             <table class="table-borderless w-100">
               <tr class="d-flex">
@@ -451,31 +453,7 @@ export default {
 
     this.sortByDateSent();
 
-    // console.log(this.getAverage(10, "FIX"));
 
-    // this.filteredByCurrency.forEach((item) => {
-    //   // console.log(Quote)
-
-    //   if (!item.Quote) return;
-    //   item.Quote.forEach((el) => {
-    //     if (el.CouponType == "FIX" && el.Years == 10) {
-    //       let n = "3MLSpread";
-    //       console.log(el[n]);
-
-    //       this.avgCount++;
-    //       this.avgSum += el[n];
-    //     }
-    //   });
-    // });
-
-    // console.log(
-    //   this.avgSum,
-    //   this.avgCount,
-    //   (this.avgSum / this.avgCount).toFixed(1)
-    // );
-
-    // console.log(this.filteredByCurrency)
-    // console.log(this.years)
   },
 };
 </script>
