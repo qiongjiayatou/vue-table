@@ -118,6 +118,7 @@
                   v-else
                   :class="[
                     'col-3',
+                    'text-left',
                     i !== 0 ? 'collapse collapse-' + item.Company : '',
                   ]"
                 >
